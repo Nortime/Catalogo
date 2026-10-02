@@ -88,9 +88,19 @@ main{max-width:1280px;margin:0 auto;padding:16px 16px 140px}
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#16181C !important;color:#fff !important;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -6px 20px rgba(0,0,0,.18)}
 .dock .in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px}
 .dock .sum{flex:1;min-width:0}
-.dock .tot{font-family:var(--cond);font-weight:700;font-size:24px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .tot{font-family:var(--cond);font-weight:700;font-size:clamp(17px,5.4vw,24px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dock .split{font-size:13px;color:#B9BEC6;display:flex;gap:12px;flex-wrap:wrap}
 .dock .split .o{color:#F7B560}
+.dock .split .p{color:#F4C400;font-weight:600}
+.dock .in{flex-wrap:wrap;row-gap:4px}
+.dock .cot{flex-basis:100%;font-size:12px;color:#9AA1AB;border-top:1px solid #2A2E34;padding-top:5px;margin-top:2px}
+.dock .cot b{color:#DDE0E4;font-weight:600}
+.cotiz{max-width:1280px;margin:12px auto 0;padding:0 16px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:14px;color:var(--muted)}
+.cotiz b{font-family:var(--cond);font-weight:700;font-size:17px;color:var(--ink);letter-spacing:.01em}
+.cotiz .r{font-family:var(--cond);font-weight:600;font-size:17px;color:var(--ink);white-space:nowrap}
+.subt.ars{border-top:0;padding-top:0;color:var(--muted);font-weight:500}
+.grand .g-ars{flex-basis:100%;text-align:right;font-family:var(--cond);font-weight:600;font-size:19px;color:#F4C400}
+.grand .g-ars small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:#B9BEC6}
 .dock .rec{border:0;background:transparent;color:#F4C400;text-decoration:underline;font-size:13px;font-weight:600;padding:0}
 .go{border:0;background:var(--signal);color:var(--signal-ink);font-family:var(--cond);font-weight:700;font-size:20px;padding:0 22px;height:50px;border-radius:25px;white-space:nowrap}
 .go:disabled{opacity:.45;cursor:default}
@@ -187,6 +197,7 @@ form.f{margin-top:18px;display:grid;gap:12px}
 <div class="dock"><div class="in">
   <div class="sum"><div class="tot" id="dTot">Pedido vacío</div><div class="split" id="dSplit">Sumá productos con + y aparecen acá</div></div>
   <button class="go" id="dGo" disabled>Pedido</button>
+  <div class="cot" id="dCot"></div>
 </div></div>
 <div class="toast" id="toast"></div>
 
@@ -225,6 +236,11 @@ const IMGS={"catwM-31": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD
 const TABS=[["catw","Relojes CAT","CAT"],["cats","Lentes CAT","CAT Lentes"],["catj","Joyería CAT","CAT Joyería"],["rom","Relojes Roamer","Roamer"],["rbk","Relojes Reebok","Reebok"]];
 const TNAME=Object.fromEntries(TABS.map(t=>[t[0],t[1]])), BRAND=Object.fromEntries(TABS.map(t=>[t[0],t[2]]));
 const SYM={USD:"U$S",CHF:"₣"};
+// ===== COTIZACIÓN: editá acá los valores en pesos y la fecha =====
+const COTIZ={USD:1500, CHF:1850, fecha:"02/10/2026"};
+const ars=n=>"$ "+Math.round(n).toLocaleString("es-AR");
+const toARS=b=>(b.USD||0)*COTIZ.USD+(b.CHF||0)*COTIZ.CHF;
+const cotStr=`U$S 1 = ${ars(COTIZ.USD)} · ₣ 1 = ${ars(COTIZ.CHF)}`;
 const KEY="nortime_pedido_v1";
 const $=s=>document.querySelector(s);
 const fmt=n=>n.toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -300,7 +316,7 @@ function updateDock(){const t=totals(),u=t.u,all=t.all;
     $("#dGo").disabled=true;$("#dGo").textContent="Pedido";return}
   if(state.sent){state.sent=false;save()}
   tot.textContent=curStr(all);
-  $("#dSplit").innerHTML=`<span>${u} ${u===1?"unidad":"unidades"}</span><span>Ahora: ${t.now.u}</span>`+(t.oct.u?`<span class="o">Octubre: ${t.oct.u}</span>`:"")+(t.dic.u?`<span class="o">Diciembre: ${t.dic.u}</span>`:"");
+  $("#dSplit").innerHTML=`<span class="p">≈ ${ars(toARS(all))}</span><span>${u} ${u===1?"unidad":"unidades"}</span><span>Ahora: ${t.now.u}</span>`+(t.oct.u?`<span class="o">Octubre: ${t.oct.u}</span>`:"")+(t.dic.u?`<span class="o">Diciembre: ${t.dic.u}</span>`:"");
   $("#dGo").disabled=false;$("#dGo").textContent=`Pedido (${u})`;
   if(prev!==tot.textContent){tot.classList.remove("bump");void tot.offsetWidth;tot.classList.add("bump")}}
 
@@ -308,11 +324,11 @@ function secHTML(b,title,cls,hint){if(!b.lines.length)return"";
   return `<section class="sec ${cls}"><h3><span>${title}</span><span>${b.u} u.</span></h3>${hint?'<p class="hint">'+hint+"</p>":""}
   ${b.lines.map(l=>`<div class="line"><div><div class="c">${l.v.c}</div><div class="d">${BRAND[l.p.t]} · ${l.p.n} · ${money(l.v.p,l.p.cur)} c/u</div></div>
   <div class="r">${stepHTML(l.id,l.q,maxFor(l.v))}<span class="st">${money(l.q*l.v.p,l.p.cur)}</span></div></div>`).join("")}
-  <div class="subt"><span>Subtotal</span><span>${curStr(b)}</span></div></section>`}
+  <div class="subt"><span>Subtotal</span><span>${curStr(b)}</span></div><div class="subt ars"><span></span><span>≈ ${ars(toARS(b))}</span></div></section>`}
 function renderSheet(){const t=totals();
   if(!t.u){$("#shBody").innerHTML='<div class="empty"><b>El pedido está vacío</b>Cerrá esta ventana y sumá productos con +.</div>';return}
   $("#shBody").innerHTML=secHTML(t.now,"Entrega inmediata","now","")+secHTML(t.oct,"Entrega mediados de octubre","oct","Estos productos se despachan cuando ingresen, por separado del resto.")+secHTML(t.dic,"Disponible para diciembre","dic","Colores que ingresan en diciembre; se despachan aparte.")+
-  `<div class="grand"><span>Total del pedido · ${t.u} u.</span><b>${curStr(t.all)}</b></div>`}
+  `<div class="grand"><span>Total del pedido · ${t.u} u.</span><b>${curStr(t.all)}</b><span class="g-ars">≈ ${ars(toARS(t.all))} <small>en pesos · ${cotStr}</small></span></div>`}
 
 function buildMsg(){const t=totals(),f=state.form;const L=[];
   L.push("*PEDIDO NORTIME*");L.push("Comercio: "+(f.shop||"").trim());
@@ -320,9 +336,9 @@ function buildMsg(){const t=totals(),f=state.form;const L=[];
   L.push("Envío: "+(f.ship||"A coordinar"));
   const sec=(b,title)=>{if(!b.lines.length)return;L.push("");L.push(`*${title}* (${b.u} u.)`);
     b.lines.forEach(l=>L.push(`• ${l.q} x ${l.v.c} – ${BRAND[l.p.t]} ${l.p.n} – ${money(l.v.p,l.p.cur)} c/u = ${money(l.q*l.v.p,l.p.cur)}`));
-    L.push("Subtotal: "+curStr(b))};
+    L.push("Subtotal: "+curStr(b)+" (≈ "+ars(toARS(b))+")")};
   sec(t.now,"ENTREGA INMEDIATA");sec(t.oct,"PENDIENTE – ENTREGA MEDIADOS DE OCTUBRE");sec(t.dic,"PENDIENTE – DISPONIBLE PARA DICIEMBRE");
-  L.push("");L.push(`*TOTAL: ${curStr(t.all)}* (${t.u} unidades)`);
+  L.push("");L.push(`*TOTAL: ${curStr(t.all)}* (${t.u} unidades)`);L.push(`*Total en pesos: ≈ ${ars(toARS(t.all))}*`);L.push(`Cotización: ${cotStr} (${COTIZ.fecha})`);
   if(f.notes&&f.notes.trim()){L.push("");L.push("Notas: "+f.notes.trim())}
   return L.join("\n")}
 
@@ -366,6 +382,7 @@ let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on
   try{min=localStorage.getItem("nortime_info_min")==="1"}catch(e){}
   const set=m=>{box.classList.toggle("min",m);btn.setAttribute("aria-expanded",String(!m));tg.textContent=m?"Ver":"Ocultar";try{localStorage.setItem("nortime_info_min",m?"1":"0")}catch(e){}};
   set(min);btn.addEventListener("click",()=>set(!box.classList.contains("min")))})();
+$("#dCot").innerHTML=`Cotización ${COTIZ.fecha.slice(0,5)}: <b>U$S 1 = ${ars(COTIZ.USD)}</b> · <b>₣ 1 = ${ars(COTIZ.CHF)}</b>`;
 render();updateDock();
 </script>
 </body>
