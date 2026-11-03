@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#16181C">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nortime · Obaku mayorista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:only light;  --bg:#E4E6E9;--paper:#FFFFFF;--ink:#16181C;--muted:#5A606A;--line:#CDD1D6;
+  --signal:#F4C400;--signal-ink:#16181C;--oct:#A65200;--oct-bg:#FFF4E5;--bad:#B3261E;--ok:#1F6B3A;
+  --cond:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 130px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+img{max-width:100%;display:block}
+
+header.top{position:sticky;top:0;padding-top:env(safe-area-inset-top,0px);z-index:20;background:#16181C !important;color:#fff !important}
+:root[data-theme="dark"] header.top,:root:not([data-theme="light"]) header.top{}
+.bar{max-width:1280px;margin:0 auto;padding:12px 16px 10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand b{font-family:var(--cond);font-weight:700;font-size:26px;letter-spacing:.02em;color:var(--signal);line-height:1}
+.brand span{font-size:13px;color:#B9BEC6}
+.search{flex:1 1 280px;position:relative;max-width:460px}
+.search input{width:100%;height:42px;border-radius:21px;border:0;background:#2A2E34;color:#fff;padding:0 40px 0 16px;font-size:16px}
+.search input::placeholder{color:#9AA1AB}
+.search button{position:absolute;right:6px;top:6px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#B9BEC6;font-size:18px;display:none}
+.search.has button{display:block}
+nav.tabs{max-width:1280px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 12px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:0;background:transparent !important;color:#B9BEC6 !important;padding:10px 12px 11px;font-family:var(--cond);font-weight:600;font-size:17px;letter-spacing:.01em;border-bottom:4px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:#fff !important;border-bottom-color:var(--signal)}
+.tab .n{font-family:var(--body);font-size:12px;font-weight:600;margin-left:6px;padding:1px 7px;border-radius:9px;background:#2A2E34;color:#DDE0E4}
+.tab .n.hit{background:var(--signal);color:var(--signal-ink)}
+
+main{max-width:1280px;margin:0 auto;padding:16px 16px 140px}
+.grp{margin:26px 0 12px;display:flex;align-items:baseline;gap:12px}
+.grp h2{margin:0;font-family:var(--cond);font-weight:700;font-size:28px;line-height:1.1}
+.grp small{color:var(--muted);font-size:14px}
+.brandhead{margin:34px 0 0;padding-top:14px;border-top:3px solid var(--ink);font-family:var(--cond);font-weight:700;font-size:20px;color:var(--muted)}
+.brandhead:first-child{margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;align-items:start}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.ficha{cursor:zoom-in;display:block;width:100%;border:0;padding:0;background:#fff;aspect-ratio:4/3;position:relative}
+.ficha.tall{aspect-ratio:540/780}
+.ficha img{width:100%;height:100%;object-fit:contain}
+.ficha .zoom{position:absolute;right:8px;bottom:8px;background:rgba(22,24,28,.78);color:#fff;font-size:12px;padding:3px 8px;border-radius:12px}
+.info{padding:12px 14px 4px}
+.info h3{margin:0 0 6px;font-family:var(--cond);font-weight:700;font-size:22px;line-height:1.15}
+.specs{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0;font-size:14px;color:var(--muted)}
+.specs div{display:flex;gap:5px}
+.specs dt{font-weight:600;color:var(--ink)}
+.specs dd{margin:0}
+.extra{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.vars{list-style:none;margin:8px 0 0;padding:0 0 4px}
+.v{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.v.inc{background:#FFF6CC;background:color-mix(in srgb,var(--signal) 14%,var(--paper))}
+.v .code{font-family:var(--cond);font-weight:600;font-size:18px;letter-spacing:.01em;word-break:break-all}
+.v .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
+.t{font-size:12px;font-weight:600;padding:1px 7px;border-radius:3px;line-height:1.5}
+.t.oct,.t.dic{color:var(--oct);background:var(--oct-bg);border:1.5px dashed var(--oct)}
+.t.new{background:var(--ink);color:var(--paper)}
+.t.ult{color:var(--bad);border:1.5px solid var(--bad)}
+.t.sin{background:var(--bad);color:#fff}
+.t.note{border:1px solid var(--line);color:var(--muted)}
+.price{font-family:var(--cond);font-weight:700;font-size:20px;white-space:nowrap}
+.price s{font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted);margin-right:6px}
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.step{display:flex;align-items:center;border:1.5px solid var(--ink);border-radius:22px;overflow:hidden;height:38px}
+.step button{width:40px;height:100%;border:0;background:transparent;font-size:22px;font-weight:500;line-height:1}
+.step button:disabled{opacity:.3;cursor:default}
+.step input{width:38px;height:100%;border:0;background:transparent;text-align:center;font-family:var(--cond);font-weight:700;font-size:19px;-moz-appearance:textfield;padding:0}
+.step input::-webkit-inner-spin-button{display:none}
+.v.inc .step{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.nostock{font-size:13px;color:var(--muted)}
+.empty{padding:60px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;font-family:var(--cond);font-size:24px;color:var(--ink)}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#16181C !important;color:#fff !important;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+.dock .in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px}
+.dock .sum{flex:1;min-width:0}
+.dock .tot{font-family:var(--cond);font-weight:700;font-size:clamp(17px,5.4vw,24px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .split{font-size:13px;color:#B9BEC6;display:flex;gap:12px;flex-wrap:wrap}
+.dock .split .o{color:#F7B560}
+.dock .split .p{color:#F4C400;font-weight:600}
+.dock .in{flex-wrap:wrap;row-gap:4px}
+.dock .cot{flex-basis:100%;font-size:12px;color:#9AA1AB;border-top:1px solid #2A2E34;padding-top:5px;margin-top:2px}
+.dock .cot b{color:#DDE0E4;font-weight:600}
+.cotiz{max-width:1280px;margin:12px auto 0;padding:0 16px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:14px;color:var(--muted)}
+.cotiz b{font-family:var(--cond);font-weight:700;font-size:17px;color:var(--ink);letter-spacing:.01em}
+.cotiz .r{font-family:var(--cond);font-weight:600;font-size:17px;color:var(--ink);white-space:nowrap}
+.subt.ars{border-top:0;padding-top:0;color:var(--muted);font-weight:500}
+.grand .g-ars{flex-basis:100%;text-align:right;font-family:var(--cond);font-weight:600;font-size:19px;color:#F4C400}
+.grand .g-ars small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:#B9BEC6}
+.dock .rec{border:0;background:transparent;color:#F4C400;text-decoration:underline;font-size:13px;font-weight:600;padding:0}
+.go{border:0;background:var(--signal);color:var(--signal-ink);font-family:var(--cond);font-weight:700;font-size:20px;padding:0 22px;height:50px;border-radius:25px;white-space:nowrap}
+.go:disabled{opacity:.45;cursor:default}
+.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.bump{animation:none}}
+
+dialog:not([open]){display:none}
+dialog[open]{display:block;z-index:50}
+dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
+dialog::backdrop{background:rgba(10,12,15,.6)}
+.sheet{position:fixed;inset:0;margin:0;width:100%;height:100%}
+.sheet .panel{position:absolute;left:0;right:0;bottom:0;max-height:94%;margin:0 auto;max-width:720px;background:var(--paper);color:var(--ink);border-radius:14px 14px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sheet header h2{margin:0;font-family:var(--cond);font-weight:700;font-size:26px}
+.x{border:0;background:transparent;font-size:28px;width:40px;height:40px;line-height:1}
+.scroll{overflow-y:auto;padding:4px 18px 18px;-webkit-overflow-scrolling:touch}
+.sec{margin-top:16px}
+.sec h3 span:last-child{white-space:nowrap}
+.sec h3{margin:0 0 2px;font-family:var(--cond);font-weight:700;font-size:21px;display:flex;justify-content:space-between;gap:10px}
+.sec.oct h3,.sec.dic h3{color:var(--oct)}
+.sec.oct,.sec.dic{margin-top:12px;border:2px dashed var(--oct);border-radius:8px;padding:10px 12px;background:var(--oct-bg)}
+.sec p.hint{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.line .c{font-family:var(--cond);font-weight:600;font-size:17px}
+.line .d{font-size:13px;color:var(--muted)}
+.line .r{display:flex;align-items:center;gap:10px}
+.line .st{font-family:var(--cond);font-weight:700;font-size:17px;min-width:92px;text-align:right}
+.line .step{height:32px}.line .step button{width:32px;font-size:19px}.line .step input{width:30px;font-size:17px}
+.subt{display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--line);font-weight:600}
+.grand{margin-top:16px;padding:12px 14px;background:#16181C;color:#fff;border-radius:8px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.grand b{font-family:var(--cond);font-size:26px}
+form.f{margin-top:18px;display:grid;gap:12px}
+.f label{display:grid;gap:4px;font-weight:600;font-size:14px}
+.f label span.opt{font-weight:400;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;border:1.5px solid var(--line);background:var(--paper);border-radius:6px;padding:10px 12px;font-size:16px;font-weight:400}
+.f textarea{min-height:70px;resize:vertical}
+.f .err{color:var(--bad);font-size:13px;font-weight:500;display:none}
+.f .bad input{border-color:var(--bad)}.f .bad .err{display:block}
+.actions{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:6px}
+.wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;background:#1F8F4E;color:#fff;font-family:var(--cond);font-weight:700;font-size:21px;height:52px;padding:0 22px;border-radius:26px;text-decoration:none;flex:1 1 240px}
+.ghost.cp{color:var(--ink);border-color:var(--ink);height:52px;border-radius:26px;font-weight:700}
+.ghost{border:1.5px solid var(--line);background:transparent;border-radius:22px;height:44px;padding:0 16px;font-weight:600;color:var(--muted)}
+.fine{font-size:13px;color:var(--muted);margin:4px 0 0}
+
+.lb{position:fixed;inset:0;margin:0;width:100%;height:100%;background:#0c0d0f}
+.lb .wrap{position:absolute;inset:0;overflow:auto;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 50px) 0 calc(env(safe-area-inset-bottom,0px) + 20px)}
+.lb img{max-width:100%;max-height:100%;cursor:zoom-in;background:#fff}
+.lb.z .wrap{display:block}.lb.z img{max-width:none;max-height:none;width:220%;cursor:zoom-out}
+.lb .x{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;color:#fff;background:rgba(255,255,255,.12);border-radius:50%;z-index:2}
+.lb .cap{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:16px;color:#fff;font-family:var(--cond);font-weight:600;font-size:18px;right:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.howto{max-width:1280px;margin:14px auto 0;padding:0 16px}
+.howto .box{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--signal);border-radius:6px;overflow:hidden}
+.howto-h{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:11px 14px;text-align:left}
+.howto-h .i{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#16181C;color:#F4C400;font-family:var(--cond);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center}
+.howto-h b{flex:1;font-family:var(--cond);font-weight:700;font-size:19px}
+.howto-h .tg{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.howto-h .tg::after{content:"";display:inline-block;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-135deg);margin-left:7px;vertical-align:1px;transition:transform .25s}
+.howto.min .howto-h .tg::after{transform:rotate(45deg);vertical-align:3px}
+.howto-b{display:grid;grid-template-rows:1fr;transition:grid-template-rows .3s ease,opacity .25s ease;opacity:1}
+.howto.min .howto-b{grid-template-rows:0fr;opacity:0}
+.howto-b>div{overflow:hidden}
+.howto ol{margin:0;padding:0 14px 14px;list-style:none;display:grid;gap:8px;counter-reset:s}
+@media (min-width:760px){.howto ol{grid-template-columns:repeat(4,1fr)}}
+.howto li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.35}
+.howto li::before{content:counter(s);flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#F4C400;color:#16181C;font-family:var(--cond);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;margin-top:-1px}
+@media (prefers-reduced-motion:reduce){.howto-b,.howto-h .tg::after{transition:none}}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);transform:translateX(-50%);background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:8px 14px;border-radius:18px;font-size:14px;font-weight:500;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.toast.on{opacity:1}
+@media (max-width:640px){.brand span{display:none}.brand b{font-size:22px}.bar{flex-wrap:nowrap;gap:12px;padding:10px 12px 6px}.search{flex:1 1 auto}}
+@media (min-width:760px){.sheet .panel{bottom:auto;top:4vh;border-radius:14px;max-height:92vh}}
+
+.brand .obk{font-family:var(--cond);font-weight:600;font-size:22px;letter-spacing:.28em;color:#fff;line-height:1}
+.ficha.sq{aspect-ratio:1/1;cursor:zoom-in}.ficha.nof{cursor:default}
+.ficha.sq img{object-fit:contain;padding:10px}
+.grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.info .tags{display:flex;flex-wrap:wrap;gap:5px}
+.t.sx{background:var(--ink);color:var(--paper)}
+.v{grid-template-columns:1fr}.v .code{font-size:17px;word-break:normal}.v .right{flex-direction:row;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}.pvp b{white-space:nowrap}
+.brand .obk{display:inline !important}
+.pvp{font-size:13px;color:var(--muted);margin-top:2px}.pvp b{color:var(--ink);font-weight:600}
+@media (max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.v{grid-template-columns:1fr;padding:10px}.v .right{flex-direction:column;align-items:stretch}.right .price{text-align:left}.v .code{font-size:15px;word-break:break-all}.step{justify-content:space-between}.info h3{font-size:19px}.brand .obk{font-size:18px}.ficha.sq img{padding:4px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <div class="brand"><b>NORTIME</b><span class="obk">OBAKU</span><span>Catálogo mayorista · Denmark</span></div>
+    <div class="search" id="sbox"><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Buscar modelo, color o código" aria-label="Buscar por nombre o código"><button id="qx" aria-label="Borrar búsqueda">✕</button></div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+</header>
+<section class="howto" id="howto"><div class="box">
+  <button type="button" class="howto-h" id="howtoT" aria-expanded="true" aria-controls="howtoB"><span class="i">i</span><b>Cómo hacer tu pedido</b><span class="tg">Ocultar</span></button>
+  <div class="howto-b" id="howtoB"><div><ol>
+    <li><span>Sumá relojes al carrito con <b>+</b> en cada código.</span></li>
+    <li><span>Tocá <b>Pedido</b> en la barra de abajo.</span></li>
+    <li><span>Completá los <b>datos de tu comercio</b>.</span></li>
+    <li><span><b>Enviá por WhatsApp</b> o <b>copiá el pedido</b> para mandarlo por donde prefieras.</span></li>
+  </ol></div></div>
+</div></section>
+<div class="cotiz" id="cotiz"></div>
+<main id="list" aria-live="polite"><div class="empty" id="boot"><b>Cargando catálogo…</b>Si este mensaje no desaparece, abrilo con Google Chrome (Android) o Safari (iPhone).</div></main>
+
+<div class="dock"><div class="in">
+  <div class="sum"><div class="tot" id="dTot">Pedido vacío</div><div class="split" id="dSplit">Sumá relojes con + y aparecen acá</div></div>
+  <button class="go" id="dGo" disabled>Pedido</button>
+  <div class="cot" id="dCot"></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<dialog class="sheet" id="sheet" aria-labelledby="shT"><div class="panel">
+  <header><h2 id="shT">Tu pedido Obaku</h2><button class="x" data-close aria-label="Cerrar">×</button></header>
+  <div class="scroll">
+    <div id="shBody"></div>
+    <form class="f" id="form" novalidate>
+      <label id="fShopL">Nombre del comercio<input name="shop" id="fShop" autocomplete="organization" required><span class="err">Escribí el nombre del comercio para enviar el pedido.</span></label>
+      <label>Contacto <span class="opt">(opcional)</span><input name="contact" autocomplete="name" placeholder="Nombre y teléfono"></label>
+      <label>Forma de envío <span class="opt">(opcional)</span><select name="ship"><option value="">A coordinar</option><option>Retiro en oficina</option><option>Envío por transporte / expreso</option><option>Envío por correo</option><option>Moto / flete en CABA-GBA</option></select></label>
+      <label>Notas <span class="opt">(opcional)</span><textarea name="notes" placeholder="Horarios, CUIT, dirección de entrega…"></textarea></label>
+      <div class="actions">
+        <a class="wa" id="waBtn" href="#" target="_blank" rel="noopener">Copiar pedido y abrir WhatsApp</a>
+        <button type="button" class="ghost cp" id="copyBtn">Solo copiar</button>
+      </div>
+      <p class="fine">Se copia el pedido y se abre WhatsApp con el mensaje ya escrito: elegí el chat de tu vendedor y tocá Enviar. Si el mensaje no aparece, mantené apretado en el chat y tocá Pegar.</p>
+      <div class="actions" style="justify-content:flex-end"><button type="button" class="ghost" id="clearBtn">Vaciar pedido</button></div>
+    </form>
+  </div>
+</div></dialog>
+
+<dialog class="lb" id="lb"><button class="x" data-close aria-label="Cerrar">×</button><div class="cap" id="lbCap"></div><div class="wrap"><img id="lbImg" alt=""></div></dialog>
+
+<script>
+function openDlg(d){if(d.showModal){try{d.showModal();return}catch(e){}}d.setAttribute("open","")}
+function closeDlg(d){if(d.close&&d.hasAttribute("open")){try{d.close()}catch(e){}}d.removeAttribute("open")}
+function isOpen(d){return d.hasAttribute("open")}
+if(!window.CSS)window.CSS={};if(!CSS.escape)CSS.escape=function(s){return String(s).replace(/["\\]/g,"\\$&")};
+
+const PRODS=[{"c": "V248GXCMMC-H", "b": "V248GXCMMC", "f": "Brink", "n": "Brink Sky", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 71.11, "su": 128, "q": 10}, {"c": "V248LXCMMC-H", "b": "V248LXCMMC", "f": "Brink", "n": "Brink Lille Sky", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 71.11, "su": 128, "q": 10}, {"c": "V256LXCMMC1", "b": "V256LXCMMC", "f": "Diamant", "n": "Diamant Sky", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V301LXCMMC", "b": "V301LXCMMC", "f": "Adamas", "n": "Adamas Sky", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V312LXCMMC", "b": "V312LXCMMC", "f": "Oval", "n": "Oval Ice", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V319GXCBMC", "b": "V319GXCBMC", "f": "Servietter", "n": "Servietter Onyx", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 142.22, "su": 256, "q": 10}, {"c": "V319GXCWMC", "b": "V319GXCWMC", "f": "Servietter", "n": "Servietter Steel", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 142.22, "su": 256, "q": 5}, {"c": "V319GXSLML", "b": "V319GXSLML", "f": "Servietter", "n": "Servietter Ocean", "s": "Hombre", "pt": false, "tg": ["Malla"], "p": 160, "su": 288, "q": 5}, {"c": "V319LXCWMC", "b": "V319LXCWMC", "f": "Servietter", "n": "Servietter Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 142.22, "su": 256, "q": 10}, {"c": "V319LXFWMC", "b": "V319LXFWMC", "f": "Servietter", "n": "Servietter Lille Butter", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 142.22, "su": 256, "q": 10}, {"c": "V319LXGWMG", "b": "V319LXGWMG", "f": "Servietter", "n": "Servietter Lille Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V319LXXNMN", "b": "V319LXXNMN", "f": "Servietter", "n": "Servietter Lille Walnut", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V320LXCZMC-DM", "b": "V320LXCZMC", "f": "Tone", "n": "Tone Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V320LXCZML-DL", "b": "V320LXCZML", "f": "Tone", "n": "Tone Artic", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V320LXGZMG-DG", "b": "V320LXGZMG", "f": "Tone", "n": "Tone Steel", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V320LXVZMN-DN", "b": "V320LXVZMN", "f": "Tone", "n": "Tone Walnut", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V320LXVZMV-DQ", "b": "V320LXVZMV", "f": "Tone", "n": "Tone Ruby", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V321LXCWMC", "b": "V321LXCWMC", "f": "Flamme", "n": "Flamme Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 113.78, "su": 204.8, "q": 10}, {"c": "V321LXVNMN", "b": "V321LXVNMN", "f": "Flamme", "n": "Flamme Walnut", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V322LXCIMC", "b": "V322LXCIMC", "f": "Panel", "n": "Panel Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 131.56, "su": 236.8, "q": 5}, {"c": "V322LXGEMG", "b": "V322LXGEMG", "f": "Panel", "n": "Panel Basil", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 149.33, "su": 268.8, "q": 5}, {"c": "V322LXGGMG", "b": "V322LXGGMG", "f": "Panel", "n": "Panel Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 149.33, "su": 268.8, "q": 5}, {"c": "V322LXVLML", "b": "V322LXVLML", "f": "Panel", "n": "Panel Ocean", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 149.33, "su": 268.8, "q": 5}, {"c": "V146LXVJMJ", "b": "V146LXVJMJ", "f": "Otros modelos", "n": "Obaku V146", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 149.33, "su": 268.8, "q": 10}, {"c": "V149LXGGMG4", "b": "V149LXGGMG", "f": "Sol", "n": "Sol Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 149.33, "su": 268.8, "q": 10}, {"c": "V149LXVLML4", "b": "V149LXVLML", "f": "Sol", "n": "Sol", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V149LXVLMV4", "b": "V149LXVLMV", "f": "Sol", "n": "Sol", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V149LXVQMV4", "b": "V149LXVQMV", "f": "Sol", "n": "Sol", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V173LXVLML3", "b": "V173LXVLML", "f": "Sky", "n": "Sky", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 184.89, "su": 332.8, "q": 5}, {"c": "V173LXVLMV", "b": "V173LXVLMV", "f": "Sky", "n": "Sky", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 184.89, "su": 332.8, "q": 5}, {"c": "V173LXVNMN3", "b": "V173LXVNMN", "f": "Sky", "n": "Sky Walnut", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 184.89, "su": 332.8, "q": 5}, {"c": "V197GXCWMC3", "b": "V197GXCWMC", "f": "Mark", "n": "Mark", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V197GXGWMG3", "b": "V197GXGWMG", "f": "Mark", "n": "Mark Gold", "s": "Hombre", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V197LXCWMC3", "b": "V197LXCWMC", "f": "Mark", "n": "Mark Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V197LXVLML3", "b": "V197LXVLML", "f": "Mark", "n": "Mark Lille Ocean", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V197LXVWMV3", "b": "V197LXVWMV", "f": "Mark", "n": "Mark Lille Rose", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V209LXBBMB3", "b": "V209LXBBMB", "f": "Liv", "n": "Liv Charcoal", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V209LXCIMC3", "b": "V209LXCIMC", "f": "Liv", "n": "Liv Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V209LXGIMC3", "b": "V209LXGIMC", "f": "Liv", "n": "Liv Gold Bicolor", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V209LXGIMG3", "b": "V209LXGIMG", "f": "Liv", "n": "Liv Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V211LXCIMC2", "b": "V211LXCIMC", "f": "Mynte", "n": "Mynte", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V211LXBBMB2", "b": "V211LXBBMB", "f": "Mynte", "n": "Mynte Charcoal", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V227LXVLMV1", "b": "V227LXVLMV", "f": "Dok", "n": "Dok Azure", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 184.89, "su": 332.8, "q": 5}, {"c": "V230LXCWMC3", "b": "V230LXCWMC", "f": "Papir", "n": "Papir Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V230LXGWMG3", "b": "V230LXGWMG", "f": "Papir", "n": "Papir", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V237LXCIMC2", "b": "V237LXCIMC", "f": "Syren", "n": "Syren Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V237LXGIMG2", "b": "V237LXGIMG", "f": "Syren", "n": "Syren Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V241LXCLML", "b": "V241LXCLML", "f": "Vikke", "n": "Vikke Arctic", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 113.78, "su": 204.8, "q": 4}, {"c": "V241LXCWMC1", "b": "V241LXCWMC", "f": "Vikke", "n": "Vikke Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V241LXGWMG1", "b": "V241LXGWMG", "f": "Vikke", "n": "Vikke Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V241LXVWMV1", "b": "V241LXVWMV", "f": "Vikke", "n": "Vikke Rose", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 124.44, "su": 224, "q": 4}, {"c": "V247XDGISG", "b": "V247XDGISG", "f": "Lyng Stor", "n": "Lyng Stor Cider", "s": "Hombre", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V248GXBBMB1", "b": "V248GXBBMB", "f": "Brink", "n": "Brink", "s": "Hombre", "pt": false, "tg": ["Caja negra", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V248GXCLMC1", "b": "V248GXCLMC", "f": "Brink", "n": "Brink Cyan", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 71.11, "su": 128, "q": 10}, {"c": "V248LXCIMC1", "b": "V248LXCIMC", "f": "Brink", "n": "Brink", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 71.11, "su": 128, "q": 10}, {"c": "V248LXGIMG1", "b": "V248LXGIMG", "f": "Brink", "n": "Brink Lille Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V248LXGWSG", "b": "V248LXGWSG", "f": "Brink", "n": "Brink", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 124.44, "su": 224, "q": 5}, {"c": "V252LXCIMC", "b": "V252LXCIMC", "f": "Otros modelos", "n": "Obaku V252", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V252LXGIMG", "b": "V252LXGIMG", "f": "Otros modelos", "n": "Obaku V252", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V253GXCBMC", "b": "V253GXCBMC", "f": "Oktant", "n": "Oktant Onyx", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V253GXJLMJ", "b": "V253GXJLMJ", "f": "Oktant", "n": "Oktant Shadow", "s": "Hombre", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 7}, {"c": "V253GXMBMB", "b": "V253GXMBMB", "f": "Oktant", "n": "Oktant Night", "s": "Hombre", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 5}, {"c": "V253LXCBMC", "b": "V253LXCBMC", "f": "Oktant", "n": "Oktant Lille Onyx", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V253LXGWMG", "b": "V253LXGWMG", "f": "Oktant", "n": "Oktant", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V253LXSLML", "b": "V253LXSLML", "f": "Oktant", "n": "Oktant Lille Ocean", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V255LXCIMC1", "b": "V255LXCIMC", "f": "Land", "n": "Land Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V255LXGIMG1", "b": "V255LXGIMG", "f": "Land", "n": "Land Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 6}, {"c": "V256LHCNMC-DTED", "b": "V256LHCNMC", "f": "Diamant", "n": "Diamant", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V256LXBBMB1", "b": "V256LXBBMB", "f": "Diamant", "n": "Diamant Charcoal", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V256LXCIMC1", "b": "V256LXCIMC", "f": "Diamant", "n": "Diamant Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V256LXCISC", "b": "V256LXCISC", "f": "Diamant", "n": "Diamant", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V256LXGIMG1", "b": "V256LXGIMG", "f": "Diamant", "n": "Diamant Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V256LXGISG", "b": "V256LXGISG", "f": "Diamant", "n": "Diamant", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 142.22, "su": 256, "q": 10}, {"c": "V256LXVIMV1", "b": "V256LXVIMV", "f": "Diamant", "n": "Diamant", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V256LXVISV", "b": "V256LXVISV", "f": "Diamant", "n": "Diamant", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 142.22, "su": 256, "q": 8}, {"c": "V256SXCIMC1", "b": "V256SXCIMC", "f": "Diamant", "n": "Diamant Petite Steel", "s": "Mujer", "pt": true, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V256SXGIMG1", "b": "V256SXGIMG", "f": "Diamant", "n": "Diamant Petite Gold", "s": "Mujer", "pt": true, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V256SXVIMV1", "b": "V256SXVIMV", "f": "Diamant", "n": "Diamant Petite Rose", "s": "Mujer", "pt": true, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V256SXVLML1", "b": "V256SXVLML", "f": "Diamant", "n": "Diamant Petite Ocean", "s": "Mujer", "pt": true, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V258GXCISC", "b": "V258GXCISC", "f": "Klip", "n": "Klip Brace", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 160, "su": 288, "q": 10}, {"c": "V258LXBBSB", "b": "V258LXBBSB", "f": "Klip", "n": "Klip Lille Dark", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Eslabones"], "p": 184.89, "su": 332.8, "q": 10}, {"c": "V261LECWSC1", "b": "V261LECWSC", "f": "Jasmin", "n": "Jasmin Brace", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 113.78, "su": 204.8, "q": 5}, {"c": "V261LEVWSV1", "b": "V261LEVWSV", "f": "Jasmin", "n": "Jasmin Fuchsia", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 131.56, "su": 236.8, "q": 5}, {"c": "V267LXGIMG", "b": "V267LXGIMG", "f": "Tern", "n": "Tern Lille Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 5}, {"c": "V267LXVIMV", "b": "V267LXVIMV", "f": "Tern", "n": "Tern Lille Rose", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V268LXCWMC", "b": "V268LXCWMC", "f": "Mosaik", "n": "Mosaik Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 124.44, "su": 224, "q": 10}, {"c": "V268LXGWMG", "b": "V268LXGWMG", "f": "Mosaik", "n": "Mosaik Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 142.22, "su": 256, "q": 10}, {"c": "V269LXCWMC", "b": "V269LXCWMC", "f": "Satin", "n": "Satin Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 142.22, "su": 256, "q": 7}, {"c": "V269LXMWMB", "b": "V269LXMWMB", "f": "Satin", "n": "Satin Lille Tuscany", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 167.11, "su": 300.8, "q": 7}, {"c": "V273LDCWMC", "b": "V273LDCWMC", "f": "Felt", "n": "Felt Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V273LDGWMG", "b": "V273LDGWMG", "f": "Felt", "n": "Felt", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V276LEVBSV", "b": "V276LEVBSV", "f": "Otros modelos", "n": "Obaku V276", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 167.11, "su": 300.8, "q": 10}, {"c": "V277LXCIMC", "b": "V277LXCIMC", "f": "Otros modelos", "n": "Obaku V277", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V277LXGIMG", "b": "V277LXGIMG", "f": "Otros modelos", "n": "Obaku V277", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V277LXVLML", "b": "V277LXVLML", "f": "Otros modelos", "n": "Obaku V277", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V283GXBBRB", "b": "V283GXBBRB", "f": "Folie", "n": "Folie Ebony", "s": "Hombre", "pt": false, "tg": ["Caja negra", "Cuero"], "p": 160, "su": 288, "q": 10}, {"c": "V283LXBBRB", "b": "V283LXBBRB", "f": "Folie", "n": "Folie", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Cuero"], "p": 160, "su": 288, "q": 5}, {"c": "V286LXCIMC", "b": "V286LXCIMC", "f": "Juvel", "n": "Juvel Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V286LXCISC", "b": "V286LXCISC", "f": "Juvel", "n": "Juvel Brace", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V286LXGIMG", "b": "V286LXGIMG", "f": "Juvel", "n": "Juvel", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V286LXGISG", "b": "V286LXGISG", "f": "Juvel", "n": "Juvel", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 149.33, "su": 268.8, "q": 8}, {"c": "V286LXVIMV", "b": "V286LXVIMV", "f": "Juvel", "n": "Juvel", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V286LXCESE", "b": "V286LXCESE", "f": "Juvel", "n": "Juvel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 149.33, "su": 268.8, "q": 3}, {"c": "V290GXBBSB", "b": "V290GXBBSB", "f": "Spejl", "n": "Spejl Dark", "s": "Hombre", "pt": false, "tg": ["Caja negra", "Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V290GXLLSL", "b": "V290GXLLSL", "f": "Spejl", "n": "Spejl Blue", "s": "Hombre", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V290GXUUSU", "b": "V290GXUUSU", "f": "Spejl", "n": "Spejl", "s": "Hombre", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V290LXBBSB", "b": "V290LXBBSB", "f": "Spejl", "n": "Spejl", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V290LXLLSL", "b": "V290LXLLSL", "f": "Spejl", "n": "Spejl Lille Blue", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V290LXUUSU", "b": "V290LXUUSU", "f": "Spejl", "n": "Spejl", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 8}, {"c": "V292LXZWSH", "b": "V292LXZWSH", "f": "Linje", "n": "Linje", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V293LXCISC", "b": "V293LXCISC", "f": "Kamille", "n": "Kamille", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 106.67, "su": 192, "q": 10}, {"c": "V293LXGISG", "b": "V293LXGISG", "f": "Kamille", "n": "Kamille Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V293LXVISV", "b": "V293LXVISV", "f": "Kamille", "n": "Kamille Fuchsia", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V293LXVLSL", "b": "V293LXVLSL", "f": "Kamille", "n": "Kamille Bahama", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V295LXGBHG", "b": "V295LXGBHG", "f": "Figen", "n": "Figen", "s": "Mujer", "pt": false, "tg": ["Caja dorada"], "p": 106.67, "su": 192, "q": 10}, {"c": "V297LXCIMC", "b": "V297LXCIMC", "f": "Smykke", "n": "Smykke", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V297LXCXMC-DLW", "b": "V297LXCXMC", "f": "Smykke", "n": "Smykke", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V297LXGIMG", "b": "V297LXGIMG", "f": "Smykke", "n": "Smykke", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V297LXGISG", "b": "V297LXGISG", "f": "Smykke", "n": "Smykke Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V297LXGXMG-DWW", "b": "V297LXGXMG", "f": "Smykke", "n": "Smykke Maane Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V297LXVIMV", "b": "V297LXVIMV", "f": "Smykke", "n": "Smykke", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V297LXVISV", "b": "V297LXVISV", "f": "Smykke", "n": "Smykke", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V298GDCWMC", "b": "V298GDCWMC", "f": "Chia", "n": "Chia", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V298LDCWMC", "b": "V298LDCWMC", "f": "Chia", "n": "Chia Lille Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V299LXVLML-EJBVL", "b": "V299LXVLML", "f": "Otros modelos", "n": "Obaku V299", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 142.22, "su": 256, "q": 7}, {"c": "V301LXCWMC", "b": "V301LXCWMC", "f": "Adamas", "n": "Adamas Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V301LXCWSC", "b": "V301LXCWSC", "f": "Adamas", "n": "Adamas", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 106.67, "su": 192, "q": 10}, {"c": "V301LXGGMG", "b": "V301LXGGMG", "f": "Adamas", "n": "Adamas", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V301LXGGSG", "b": "V301LXGGSG", "f": "Adamas", "n": "Adamas Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V301LXVWMV", "b": "V301LXVWMV", "f": "Adamas", "n": "Adamas", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 96, "su": 172.8, "q": 10}, {"c": "V301LXVWSV", "b": "V301LXVWSV", "f": "Adamas", "n": "Adamas Fuchsia", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V302LXCWMC", "b": "V302LXCWMC", "f": "Pergament", "n": "Pergament Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 160, "su": 288, "q": 10}, {"c": "V302LXGWMG", "b": "V302LXGWMG", "f": "Pergament", "n": "Pergament Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V302LXLLML", "b": "V302LXLLML", "f": "Pergament", "n": "Pergament", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V305GXCWSC1", "b": "V305GXCWSC", "f": "Serviet", "n": "Serviet", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 160, "su": 288, "q": 8}, {"c": "V305GXFWSF1", "b": "V305GXFWSF", "f": "Serviet", "n": "Serviet", "s": "Hombre", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V305LXCWSC", "b": "V305LXCWSC", "f": "Serviet", "n": "Serviet Lille Brace", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 160, "su": 288, "q": 10}, {"c": "V305LXFWSF1", "b": "V305LXFWSF", "f": "Serviet", "n": "Serviet", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V305LXSLSL1", "b": "V305LXSLSL", "f": "Serviet", "n": "Serviet Lille Bahama", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 177.78, "su": 320, "q": 10}, {"c": "V279LXSLCL", "b": "V279LXSLCL", "f": "Urt", "n": "Urt Lille Oxford", "s": "Mujer", "pt": false, "tg": ["Cuero"], "p": 213.33, "su": 384, "q": 5}, {"c": "V279LXXNCN", "b": "V279LXXNCN", "f": "Urt", "n": "Urt Lille Brown", "s": "Mujer", "pt": false, "tg": ["Cuero"], "p": 213.33, "su": 384, "q": 5}, {"c": "V282GDVNCN", "b": "V282GDVNCN", "f": "Otros modelos", "n": "Obaku V282", "s": "Hombre", "pt": false, "tg": ["Caja oro rosa", "Cuero"], "p": 202.67, "su": 364.8, "q": 5}, {"c": "V260GXCLSC-DAF", "b": "V260GXCLSC", "f": "Falke", "n": "Falke", "s": "Hombre", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V307GXBBMB", "b": "V307GXBBMB", "f": "Net", "n": "Net Charcoal", "s": "Hombre", "pt": false, "tg": ["Caja negra", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V307GXLLML", "b": "V307GXLLML", "f": "Net", "n": "Net Marine", "s": "Hombre", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V307GXUUMU", "b": "V307GXUUMU", "f": "Net", "n": "Net Smokey", "s": "Hombre", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 3}, {"c": "V307LXBBMB", "b": "V307LXBBMB", "f": "Net", "n": "Net Lille Charcoal", "s": "Mujer", "pt": false, "tg": ["Caja negra", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V307LXLLML", "b": "V307LXLLML", "f": "Net", "n": "Net Lille Marine", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V307LXUUMU", "b": "V307LXUUMU", "f": "Net", "n": "Net Lille Smokey", "s": "Mujer", "pt": false, "tg": ["Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V310LXCWMC", "b": "V310LXCWMC", "f": "Funkle", "n": "Funkle Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V310LXGWMG", "b": "V310LXGWMG", "f": "Funkle", "n": "Funkle Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V310LXVWMV", "b": "V310LXVWMV", "f": "Funkle", "n": "Funkle Rose", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V260LXCESC-DAF", "b": "V260LXCESC", "f": "Falke", "n": "Falke Lille Jade", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V260LXCMSC-DAF", "b": "V260LXCMSC", "f": "Falke", "n": "Falke Lille Cambridge", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 78.22, "su": 140.8, "q": 10}, {"c": "V297SXGWMG1", "b": "V297SXGWMG", "f": "Smykke", "n": "Smykke Petite Gold", "s": "Mujer", "pt": true, "tg": ["Caja dorada", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V297SXVWMV1", "b": "V297SXVWMV", "f": "Smykke", "n": "Smykke Petite Rose", "s": "Mujer", "pt": true, "tg": ["Caja oro rosa", "Malla"], "p": 106.67, "su": 192, "q": 10}, {"c": "V301LXGESG", "b": "V301LXGESG", "f": "Adamas", "n": "Adamas Sugar", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V302LXGEMG", "b": "V302LXGEMG", "f": "Pergament", "n": "Pergament Basil", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 177.78, "su": 320, "q": 10}, {"c": "V311LXCWSC", "b": "V311LXCWSC", "f": "Pli", "n": "Pli Brace", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 124.44, "su": 224, "q": 10}, {"c": "V311LXGWSG", "b": "V311LXGWSG", "f": "Pli", "n": "Pli Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 142.22, "su": 256, "q": 10}, {"c": "V311LXVWSV", "b": "V311LXVWSV", "f": "Pli", "n": "Pli Fuchsia", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Eslabones"], "p": 142.22, "su": 256, "q": 10}, {"c": "V312LXCWMC", "b": "V312LXCWMC", "f": "Oval", "n": "Oval Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V312LXCLML", "b": "V312LXCLML", "f": "Oval", "n": "Oval Arctic", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 113.78, "su": 204.8, "q": 10}, {"c": "V312LXGWMG", "b": "V312LXGWMG", "f": "Oval", "n": "Oval Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 113.78, "su": 204.8, "q": 10}, {"c": "V312LXVNMN", "b": "V312LXVNMN", "f": "Oval", "n": "Oval Walnut", "s": "Mujer", "pt": false, "tg": ["Caja oro rosa", "Malla"], "p": 113.78, "su": 204.8, "q": 10}, {"c": "V315LXCIMC", "b": "V315LXCIMC", "f": "Stjerne", "n": "Stjerne Steel", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Malla"], "p": 88.89, "su": 160, "q": 10}, {"c": "V315LXGIMG", "b": "V315LXGIMG", "f": "Stjerne", "n": "Stjerne Gold", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Malla"], "p": 113.78, "su": 204.8, "q": 10}, {"c": "V317LECWSC", "b": "V317LECWSC", "f": "Glim", "n": "Glim Brace", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 106.67, "su": 192, "q": 10}, {"c": "V317LEGWSG", "b": "V317LEGWSG", "f": "Glim", "n": "Glim Cider", "s": "Mujer", "pt": false, "tg": ["Caja dorada", "Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V317LEZWSH", "b": "V317LEZWSH", "f": "Glim", "n": "Glim Cherrywood", "s": "Mujer", "pt": false, "tg": ["Eslabones"], "p": 131.56, "su": 236.8, "q": 10}, {"c": "V318LTCWSC", "b": "V318LTCWSC", "f": "Kraft", "n": "Kraft Lille Brace", "s": "Mujer", "pt": false, "tg": ["Automático", "Caja acero", "Eslabones"], "p": 248.89, "su": 448, "q": 10}, {"c": "V318LTGWSG", "b": "V318LTGWSG", "f": "Kraft", "n": "Kraft Lille Cider", "s": "Mujer", "pt": false, "tg": ["Automático", "Caja dorada", "Eslabones"], "p": 266.67, "su": 480, "q": 10}, {"c": "V260LXCWSH-DAF", "b": "V260LXCWSH", "f": "Falke", "n": "Falke Lille Blossom", "s": "Mujer", "pt": false, "tg": ["Caja acero", "Eslabones"], "p": 96, "su": 172.8, "q": 5}];
+// ===== COTIZACIÓN: editá acá el valor del dólar y la fecha =====
+const COTIZ={USD:1550, fecha:"03/11/2026"};
+// ===== FOTOS: carpeta y extensión (fotos/V248GXCMMC.jpg) =====
+const FOTOS="fotos/", EXT=".jpg";
+
+const TABS=[["Mujer","Mujer"],["Hombre","Hombre"]];
+const KEY="nortime_obaku_pedido_v1";
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const usd=n=>"U$S "+fmt(n);
+const ars=n=>"$ "+Math.round(n).toLocaleString("es-AR");
+const pvp=p=>Math.round(p.su*COTIZ.USD/100)*100;
+const norm=s=>(s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const squash=s=>norm(s).replace(/[\s.\-_·/]/g,"");
+const PH="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#F3F4F6"/><circle cx="200" cy="185" r="74" fill="none" stroke="#C7CBD1" stroke-width="10"/><path d="M200 140v45l28 18" fill="none" stroke="#C7CBD1" stroke-width="10" stroke-linecap="round"/><rect x="176" y="70" width="48" height="40" rx="6" fill="#C7CBD1"/><rect x="176" y="260" width="48" height="40" rx="6" fill="#C7CBD1"/><text x="200" y="345" font-family="Arial" font-size="22" fill="#8A9099" text-anchor="middle">Foto próximamente</text></svg>');
+
+const BY={};PRODS.forEach((p,i)=>{p.idx=i;p.hay=norm([p.n,p.f,p.s,p.tg.join(" "),"obaku"].join(" "));p.sq=squash(p.c);BY[p.c]=p});
+
+let state={q:{},form:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.q)state=Object.assign({q:{},form:{}},s)}catch(e){}
+for(const id in state.q){if(!BY[id]||!(state.q[id]>0))delete state.q[id]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+let tab="Mujer",query="";
+try{const t=sessionStorage.getItem("nortime_obaku_tab");if(t&&TABS.some(x=>x[0]===t))tab=t}catch(e){}
+
+const MAX=999;
+function setQty(id,n){n=Math.max(0,Math.min(MAX,Math.floor(+n||0)));
+  if(n)state.q[id]=n;else delete state.q[id];save();syncRows(id);updateDock();if(isOpen($("#sheet")))renderSheet()}
+function stepHTML(id,q){return `<div class="step" data-id="${id}"><button type="button" data-d="-1" aria-label="Quitar uno" ${q?"":"disabled"}>−</button><input type="number" inputmode="numeric" min="0" max="${MAX}" value="${q}" aria-label="Cantidad"><button type="button" data-d="1" aria-label="Sumar uno">+</button></div>`}
+function card(p){const q=state.q[p.c]||0;
+  const tags=[p.s+(p.pt?" · Petite":"")].concat(p.tg).map((t,i)=>`<span class="t ${i?"note":"sx"}">${t}</span>`).join("");
+  return `<article class="card"><button type="button" class="ficha sq" data-c="${p.c}" aria-label="Ver foto ampliada de ${p.n}"><img data-src="${FOTOS+p.b+EXT}" alt="Obaku ${p.n} ${p.c}" loading="lazy"></button>
+  <div class="info"><h3>${p.n}</h3><div class="tags">${tags}</div></div>
+  <ul class="vars"><li class="v${q?" inc":""}" data-vid="${p.c}"><div><div class="code">${p.c}</div><div class="pvp">Sugerido público <b>${ars(pvp(p))}</b></div></div>
+  <div class="right"><div class="price">${usd(p.p)}</div>${stepHTML(p.c,q)}</div></li></ul></article>`}
+function matches(p,q){const qn=norm(q).trim(),qs=squash(q);if(!qs)return true;
+  return qn.split(/\s+/).filter(Boolean).every(w=>p.hay.includes(w))||p.sq.includes(qs)}
+function renderTabs(counts){$("#tabs").innerHTML=TABS.map(([k,l])=>{const c=counts?counts[k]:PRODS.filter(p=>p.s===k).length;
+  return `<button class="tab" role="tab" data-t="${k}" aria-selected="${!query&&k===tab}">${l}<span class="n${query&&c?" hit":""}">${c}</span></button>`}).join("")}
+function groupBlock(list){const fams={};list.forEach(p=>{(fams[p.f]=fams[p.f]||[]).push(p)});
+  const keys=Object.keys(fams).sort((a,b)=>a==="Otros modelos"?1:b==="Otros modelos"?-1:a.localeCompare(b));
+  return keys.map(f=>{const n=fams[f].length;return `<div class="grp"><h2>${f}</h2><small>${n} ${n===1?"modelo":"modelos"}</small></div><div class="grid">${fams[f].map(card).join("")}</div>`}).join("")}
+function render(){const L=$("#list");
+  if(query){const counts={};let h="";TABS.forEach(([k,l])=>{const hits=PRODS.filter(p=>p.s===k&&matches(p,query));counts[k]=hits.length;if(hits.length)h+=`<div class="brandhead">${l}</div>`+groupBlock(hits)});
+    renderTabs(counts);L.innerHTML=h||`<div class="empty"><b>Sin resultados para “${query.replace(/[<>&]/g,"")}”</b>Probá con parte del código (por ej. V256) o el nombre del modelo (Diamant, Oval…).</div>`}
+  else{renderTabs();L.innerHTML=groupBlock(PRODS.filter(p=>p.s===tab))}
+  observe()}
+function loadImg(im){im.onerror=function(){this.onerror=null;this.src=PH;this.closest(".ficha").classList.add("nof")};im.src=im.dataset.src}
+let io;function observe(){const ims=document.querySelectorAll("img[data-src]:not([src])");
+  if(!("IntersectionObserver" in window)){ims.forEach(loadImg);return}if(io)io.disconnect();
+  io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){loadImg(e.target);io.unobserve(e.target)}}),{rootMargin:"600px 0px"});ims.forEach(im=>io.observe(im))}
+function syncRows(id){const q=state.q[id]||0;
+  document.querySelectorAll(`li[data-vid="${CSS.escape(id)}"]`).forEach(li=>{li.classList.toggle("inc",!!q);const s=li.querySelector(".step");
+    const inp=s.querySelector("input");if(document.activeElement!==inp)inp.value=q;s.querySelector('[data-d="-1"]').disabled=!q})}
+
+function totals(){const r={u:0,usd:0,pvp:0,lines:[]};
+  for(const id in state.q){const p=BY[id],q=state.q[id];r.u+=q;r.usd+=q*p.p;r.pvp+=q*pvp(p);r.lines.push({p,q})}
+  r.lines.sort((a,b)=>a.p.idx-b.p.idx);return r}
+function updateDock(){const t=totals(),tot=$("#dTot"),prev=tot.textContent;
+  if(!t.u){if(state.sent&&state.last){tot.textContent="✓ Pedido enviado";$("#dSplit").innerHTML='Carrito vacío para un pedido nuevo · <button type="button" class="rec" id="recBtn">Recuperar el anterior</button>'}
+    else{tot.textContent="Pedido vacío";$("#dSplit").innerHTML="Sumá relojes con + y aparecen acá"}
+    $("#dGo").disabled=true;$("#dGo").textContent="Pedido";return}
+  if(state.sent){state.sent=false;save()}
+  tot.textContent=usd(t.usd);
+  $("#dSplit").innerHTML=`<span class="p">≈ ${ars(t.usd*COTIZ.USD)}</span><span>${t.u} ${t.u===1?"unidad":"unidades"}</span>`;
+  $("#dGo").disabled=false;$("#dGo").textContent=`Pedido (${t.u})`;
+  if(prev!==tot.textContent){tot.classList.remove("bump");void tot.offsetWidth;tot.classList.add("bump")}}
+function renderSheet(){const t=totals();
+  if(!t.u){$("#shBody").innerHTML='<div class="empty"><b>El pedido está vacío</b>Cerrá esta ventana y sumá relojes con +.</div>';return}
+  $("#shBody").innerHTML=`<section class="sec"><h3><span>Obaku</span><span>${t.u} u.</span></h3>${t.lines.map(l=>`<div class="line"><div><div class="c">${l.p.c}</div><div class="d">${l.p.n} · ${usd(l.p.p)} c/u</div></div>
+  <div class="r">${stepHTML(l.p.c,l.q)}<span class="st">${usd(l.q*l.p.p)}</span></div></div>`).join("")}</section>
+  <div class="grand"><span>Total mayorista · ${t.u} u.</span><b>${usd(t.usd)}</b><span class="g-ars">≈ ${ars(t.usd*COTIZ.USD)} <small>en pesos · U$S 1 = ${ars(COTIZ.USD)} · Valor de venta sugerido: ${ars(t.pvp)}</small></span></div>`}
+function buildMsg(){const t=totals(),f=state.form,L=[];
+  L.push("*PEDIDO NORTIME · OBAKU*");L.push("Comercio: "+(f.shop||"").trim());
+  if(f.contact&&f.contact.trim())L.push("Contacto: "+f.contact.trim());
+  L.push("Envío: "+(f.ship||"A coordinar"));L.push("");
+  t.lines.forEach(l=>L.push(`• ${l.q} x ${l.p.c} – Obaku ${l.p.n} – ${usd(l.p.p)} c/u = ${usd(l.q*l.p.p)}`));
+  L.push("");L.push(`*TOTAL: ${usd(t.usd)}* (${t.u} unidades)`);L.push(`*Total en pesos: ≈ ${ars(t.usd*COTIZ.USD)}*`);L.push(`Cotización: U$S 1 = ${ars(COTIZ.USD)} (${COTIZ.fecha})`);
+  if(f.notes&&f.notes.trim()){L.push("");L.push("Notas: "+f.notes.trim())}
+  return L.join("\n")}
+
+document.addEventListener("click",e=>{if(e.target.id==="recBtn"){recoverOrder();return}
+  const b=e.target.closest(".step button");if(b){const id=b.parentNode.dataset.id;setQty(id,(state.q[id]||0)+ +b.dataset.d);return}
+  const tb=e.target.closest(".tab");if(tb){tab=tb.dataset.t;try{sessionStorage.setItem("nortime_obaku_tab",tab)}catch(e){}
+    if(query){query="";$("#q").value="";$("#sbox").classList.remove("has")}render();window.scrollTo({top:0});return}
+  const fi=e.target.closest(".ficha");if(fi){if(fi.classList.contains("nof"))return;const p=BY[fi.dataset.c];$("#lbImg").src=fi.querySelector("img").src;$("#lbCap").textContent="Obaku "+p.n+" · "+p.c;$("#lb").classList.remove("z");openDlg($("#lb"));return}
+  if(e.target.closest("[data-close]")){closeDlg(e.target.closest("dialog"));return}
+  if(e.target.id==="lbImg"){$("#lb").classList.toggle("z")}});
+document.addEventListener("change",e=>{const s=e.target.closest(".step");if(s&&e.target.tagName==="INPUT")setQty(s.dataset.id,e.target.value)});
+document.addEventListener("focusin",e=>{if(e.target.matches(".step input"))e.target.select()});
+let qt;$("#q").addEventListener("input",e=>{clearTimeout(qt);qt=setTimeout(()=>{query=e.target.value.trim();$("#sbox").classList.toggle("has",!!query);render();window.scrollTo({top:0})},140)});
+$("#qx").addEventListener("click",()=>{$("#q").value="";query="";$("#sbox").classList.remove("has");render();$("#q").focus()});
+$("#dGo").addEventListener("click",()=>{renderSheet();const F=$("#form");for(const k in state.form)if(F.elements[k])F.elements[k].value=state.form[k];$("#fShopL").classList.remove("bad");openDlg($("#sheet"))});
+["sheet","lb"].forEach(id=>$("#"+id).addEventListener("click",e=>{if(e.target===e.currentTarget)closeDlg(e.currentTarget)}));
+$("#form").addEventListener("input",e=>{if(e.target.name){state.form[e.target.name]=e.target.value;save();if(e.target.name==="shop"&&e.target.value.trim())$("#fShopL").classList.remove("bad")}});
+$("#form").addEventListener("change",e=>{if(e.target.name){state.form[e.target.name]=e.target.value;save()}});
+$("#waBtn").addEventListener("click",e=>{const t=totals();if(!t.u){e.preventDefault();return}
+  if(!(state.form.shop||"").trim()){e.preventDefault();$("#fShopL").classList.add("bad");$("#fShop").focus();return}
+  const msg=buildMsg();copyText(msg);toast("Pedido copiado · abriendo WhatsApp");
+  e.currentTarget.href="https://wa.me/?text="+encodeURIComponent(msg);setTimeout(finishOrder,600)});
+function finishOrder(){if(!Object.keys(state.q).length)return;
+  state.last={q:Object.assign({},state.q),at:Date.now()};const ids=Object.keys(state.q);state.q={};state.form.notes="";state.sent=true;save();
+  ids.forEach(syncRows);const n=$("#form").elements.notes;if(n)n.value="";closeDlg($("#sheet"));updateDock();window.scrollTo({top:0})}
+function recoverOrder(){if(!state.last)return;const q={};for(const id in state.last.q)if(BY[id])q[id]=state.last.q[id];
+  state.q=q;state.sent=false;save();Object.keys(q).forEach(syncRows);updateDock();toast("Recuperaste tu último pedido")}
+function copyText(txt){if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(txt).then(()=>true,()=>fallbackCopy(txt))}return Promise.resolve(fallbackCopy(txt))}
+function fallbackCopy(txt){try{const ta=document.createElement("textarea");ta.value=txt;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,txt.length);const ok=document.execCommand("copy");ta.remove();return ok}catch(e){return false}}
+$("#copyBtn").addEventListener("click",()=>{const t=totals();if(!t.u)return;
+  if(!(state.form.shop||"").trim()){$("#fShopL").classList.add("bad");$("#fShop").focus();return}
+  copyText(buildMsg()).then(ok=>{if(ok){finishOrder();toast("Pedido copiado. Pegalo en el chat que quieras.")}else toast("No se pudo copiar en este navegador")})});
+$("#clearBtn").addEventListener("click",()=>{if(!Object.keys(state.q).length)return;if(!confirm("¿Vaciar todo el pedido?"))return;
+  const ids=Object.keys(state.q);state.q={};save();ids.forEach(syncRows);updateDock();renderSheet()});
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1600)}
+(function(){const box=$("#howto"),btn=$("#howtoT"),tg=btn.querySelector(".tg");let min=false;
+  try{min=localStorage.getItem("nortime_info_min")==="1"}catch(e){}
+  const set=m=>{box.classList.toggle("min",m);btn.setAttribute("aria-expanded",String(!m));tg.textContent=m?"Ver":"Ocultar";try{localStorage.setItem("nortime_info_min",m?"1":"0")}catch(e){}};
+  set(min);btn.addEventListener("click",()=>set(!box.classList.contains("min")))})();
+$("#cotiz").innerHTML=`<span>Precios mayoristas en dólares · el <b>sugerido público</b> está en pesos</span><span class="r">U$S 1 = ${ars(COTIZ.USD)} · ${COTIZ.fecha}</span>`;
+$("#dCot").innerHTML=`Cotización ${COTIZ.fecha.slice(0,5)}: <b>U$S 1 = ${ars(COTIZ.USD)}</b>`;
+render();updateDock();
+</script>
+</body>
+</html>
